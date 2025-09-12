@@ -1,0 +1,76 @@
+MVP form fields (≈10 core inputs)
+
+Identification (ties records to SAS structure)
+
+farmer_id (string) — you can compose from EA + household number (FID/HHNO exist in SAS).
+
+district (select) — use SAS district list.
+
+village (select) — use SAS village list.
+
+ea_code (select/text) — SAS has cascading EA codes and labels.
+
+gps_lat, gps_lon (numbers, optional) — SAS includes a GPS capture step; keep these optional in MVP.
+
+Crops / Production (your “update more frequently” fields)
+
+crop_type (select) — aligns to Section III (Crops). Start with a short list now; expand later.
+
+qty_harvested (number ≥ 0) — quantity harvested in last 12 months.
+
+unit (select) — allowed units in SAS: Kg, Tonnes, Bundle, Each, Pile, Basket, Packet.
+
+price_per_unit (number ≥ 0) — average price per unit in last 12 months.
+
+season_year (string, e.g., “2024/25”) — simple text field matched to your collection cycle.
+
+(Optional now, useful soon)
+
+area_acres (number) — SAS area is recorded in acres (whole + fraction). You can keep a single decimal field for MVP and convert, but SAS logic explicitly uses whole acre plus fraction.
+
+land_tenure (select) — Customary, Leased Customary, Leased Government, Own Freehold, Leased Freehold, Church Leased, Other.
+
+Controlled lists (ready for dropdowns)
+
+District (sample from SAS list):
+Vaimauga 1, Vaimauga 2, Vaimauga 3, Vaimauga 4, Faleata 1, Faleata 2, Faleata 3, Faleata 4, Sagaga 1, Sagaga 2, Sagaga 3, Sagaga 4, Aana Alofi 1, Aana Alofi 2, Aana Alofi 3, Aana Alofi 4.
+
+Village (sample from SAS list):
+Moataa, Vaivase Tai, Vaivase Uta, Tanoaleia, Moataa Uta, Toomatagi, Vaiala Tai, Vaiala Uta, Vaipuna, Levili, Magiagi Tai, Magiagi Uta, Faatoialemanu, Vinifou, Leone, Vaisigano.
+
+EA (Enumeration Area): use the cascading EA codes/labels shown in SAS (e.g., Moataa-01, … Vaiala Uta-01).
+
+Units (exact SAS wording):
+Kg, Tonnes, Bundle, Each, Pile, Basket, Packet.
+
+Land tenure options:
+Customary, Leased Customary, Leased Government, Own Freehold, Leased Freehold, Church Leased, Other.
+
+(If you later track land use categories)
+Permanent crops, Temporary crops, Livestock, Fallow, Non-agricultural use, Permanent meadows/pastures, Temporary meadows/pastures, Kitchen gardens/backyards, Farm buildings/yards, Forest/wooded land, Aquaculture.
+
+Validation rules (mirror SAS so data matches later imports)
+
+Quantity harvested ≥ 0 (enforced in SAS).
+
+Average price per unit ≥ 0 (enforced in SAS).
+
+Area (acres) format — SAS splits into whole acres and a valid fraction; for MVP you can allow a decimal input but consider converting to whole+fraction if you later sync back to SAS.
+
+Minimal JSON payload (what your Replit form should POST)
+{
+  "farmer_id": "EA10208-HH0012",
+  "district": "Sagaga 1",
+  "village": "Vaipuna",
+  "ea_code": "10208",
+  "gps_lat": -13.85,
+  "gps_lon": -171.76,
+  "crop_type": "Taro",
+  "qty_harvested": 1200,
+  "unit": "Kg",
+  "price_per_unit": 1.5,
+  "season_year": "2024/25"
+}
+
+
+That’s everything you need to scaffold the /survey page and its API: fields, allowed values, and validation. If you’d like, I can also generate a tiny TypeScript type or Prisma/SQL table from this exact field set.

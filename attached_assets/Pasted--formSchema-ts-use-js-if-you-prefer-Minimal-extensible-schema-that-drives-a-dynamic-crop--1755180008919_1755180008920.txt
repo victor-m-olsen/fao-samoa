@@ -1,0 +1,136 @@
+// formSchema.ts  (use .js if you prefer)
+// Minimal, extensible schema that drives a dynamic crop form
+
+export type Field =
+  | { key: string; label: string; type: "text" | "number" | "select" | "radio" | "checkbox" | "multiselect"; required?: boolean; min?: number; step?: number; placeholder?: string; options?: string[]; help?: string; }
+  | { key: string; label: string; type: "group"; fields: Field[]; help?: string };
+
+export const UNITS = ["Kg", "Tonnes", "Each", "Pile", "Basket", "Packet", "Bundle"];
+export const GROWTH_MODES = ["Single crop", "Mixed crop", "Both single & mixed"];
+export const PLANTING_SOURCES = [
+  "Own saved seed/seedlings",
+  "Another household",
+  "Market/shop",
+  "Govt/extension",
+  "NGO/project",
+  "Company/association",
+  "Other (specify)"
+];
+
+export const BANANA_TYPES = ["Fa‘i palagi", "Fa‘i Samoa", "Other (specify)"];
+
+// --- Common (shown for all crops)
+export const COMMON_IDENT_FIELDS: Field[] = [
+  { key: "farmer_id", label: "Farmer ID", type: "text", required: true, placeholder: "EA10208-HH0012" },
+  { key: "district", label: "District", type: "select", required: true, options: [
+      "Vaimauga 1","Vaimauga 2","Vaimauga 3","Vaimauga 4",
+      "Faleata 1","Faleata 2","Faleata 3","Faleata 4",
+      "Sagaga 1","Sagaga 2","Sagaga 3","Sagaga 4",
+      "A'ana Alofi 1","A'ana Alofi 2","A'ana Alofi 3","A'ana Alofi 4"
+    ] },
+  { key: "village", label: "Village", type: "text", required: true, placeholder: "e.g., Moataa, Vaipuna…" },
+  { key: "ea_code", label: "Enumeration Area (EA) Code", type: "text", placeholder: "e.g., 10208" },
+  { key: "season_year", label: "Season / Year", type: "text", required: true, placeholder: "2024/25" },
+];
+
+// Common production fields used by most crops
+export const COMMON_PRODUCTION_FIELDS: Field[] = [
+  { key: "qty_harvested", label: "Quantity harvested (last 12 months)", type: "number", min: 0, step: 0.1, required: true },
+  { key: "unit", label: "Unit of measure", type: "select", required: true, options: UNITS },
+  { key: "price_per_unit", label: "Average price per unit (last 12 months)", type: "number", min: 0, step: 0.01 },
+];
+
+// Optional land area (useful for single-crop plantings)
+export const OPTIONAL_AREA_FIELDS: Field[] = [
+  { key: "area_acres", label: "Area planted (acres)", type: "number", min: 0, step: 0.01, help: "Decimal acres OK for MVP." },
+];
+
+// --- Crop-specific blocks
+
+// Coconut
+const COCONUT_FIELDS: Field[] = [
+  { key: "growth_mode", label: "How is Coconut grown?", type: "select", options: GROWTH_MODES, required: true },
+  { key: "pest_rhino_beetle", label: "Affected by rhinoceros beetle in last 12 months?", type: "radio", options: ["Yes","No"] },
+  { key: "planted_last_12m", label: "Planted coconut in last 12 months?", type: "radio", options: ["Yes","No"] },
+  { key: "planting_sources", label: "Source(s) of planting material", type: "multiselect", options: PLANTING_SOURCES },
+  { key: "trees_harvested", label: "Number of trees harvested (last 12 months)", type: "number", min: 0, step: 1 },
+  { key: "tree_age_groups", label: "Trees by age group", type: "group", fields: [
+      { key: "age_0_5", label: "0–5 yrs (count)", type: "number", min: 0, step: 1 },
+      { key: "age_6_10", label: "6–10 yrs (count)", type: "number", min: 0, step: 1 },
+      { key: "age_11_20", label: "11–20 yrs (count)", type: "number", min: 0, step: 1 },
+      { key: "age_21_30", label: "21–30 yrs (count)", type: "number", min: 0, step: 1 },
+      { key: "age_31_plus", label: "31+ yrs (count)", type: "number", min: 0, step: 1 },
+    ]},
+  ...COMMON_PRODUCTION_FIELDS,
+];
+
+// Cocoa
+const COCOA_FIELDS: Field[] = [
+  { key: "growth_mode", label: "How is Cocoa grown?", type: "select", options: GROWTH_MODES, required: true },
+  { key: "disease_mosaic", label: "Cocoa mosaic disease in last 12 months?", type: "radio", options: ["Yes","No"] },
+  { key: "planted_last_12m", label: "Planted cocoa in last 12 months?", type: "radio", options: ["Yes","No"] },
+  { key: "planting_sources", label: "Source(s) of planting material", type: "multiselect", options: PLANTING_SOURCES },
+  { key: "tree_age_groups", label: "Trees by age group", type: "group", fields: [
+      { key: "age_0_2", label: "0–2 yrs (count)", type: "number", min: 0, step: 1 },
+      { key: "age_3_5", label: "3–5 yrs (count)", type: "number", min: 0, step: 1 },
+      { key: "age_6_10", label: "6–10 yrs (count)", type: "number", min: 0, step: 1 },
+      { key: "age_11_20", label: "11–20 yrs (count)", type: "number", min: 0, step: 1 },
+      { key: "age_21_30", label: "21–30 yrs (count)", type: "number", min: 0, step: 1 },
+      { key: "age_31_plus", label: "31+ yrs (count)", type: "number", min: 0, step: 1 },
+    ]},
+  ...COMMON_PRODUCTION_FIELDS,
+];
+
+// Breadfruit
+const BREADFRUIT_FIELDS: Field[] = [
+  { key: "growth_mode", label: "How is Breadfruit grown?", type: "select", options: GROWTH_MODES, required: true },
+  { key: "trees_single_crop", label: "Breadfruit trees (single crop)", type: "number", min: 0, step: 1 },
+  ...OPTIONAL_AREA_FIELDS,
+  { key: "planted_last_12m", label: "Planted breadfruit in last 12 months?", type: "radio", options: ["Yes","No"] },
+  { key: "planting_sources", label: "Source(s) of planting material", type: "multiselect", options: PLANTING_SOURCES },
+  { key: "trees_harvested", label: "Number of trees harvested (last 12 months)", type: "number", min: 0, step: 1 },
+  ...COMMON_PRODUCTION_FIELDS,
+];
+
+// Banana
+const BANANA_FIELDS: Field[] = [
+  { key: "banana_type", label: "Banana type", type: "select", options: BANANA_TYPES, required: true },
+  { key: "growth_mode", label: "How is Banana grown?", type: "select", options: GROWTH_MODES, required: true },
+  { key: "plants_single_crop", label: "Banana plants/suckers (single crop)", type: "number", min: 0, step: 1 },
+  ...OPTIONAL_AREA_FIELDS,
+  ...COMMON_PRODUCTION_FIELDS,
+];
+
+// Kava
+const KAVA_FIELDS: Field[] = [
+  { key: "planted_last_12m", label: "Planted kava in last 12 months?", type: "radio", options: ["Yes","No"] },
+  { key: "planting_sources", label: "Source(s) of planting material", type: "multiselect", options: PLANTING_SOURCES },
+  { key: "plants_harvested", label: "Number of plants harvested (last 12 months)", type: "number", min: 0, step: 1 },
+  ...COMMON_PRODUCTION_FIELDS,
+];
+
+// Other Permanent Crops (generic template)
+const OTHER_PERMANENT_FIELDS: Field[] = [
+  { key: "other_crop_name", label: "Crop name", type: "text", required: true, placeholder: "e.g., Mango, Citrus…" },
+  { key: "plants_growing", label: "Plants growing (count)", type: "number", min: 0, step: 1 },
+  { key: "plants_harvested", label: "Plants harvested (last 12 months)", type: "number", min: 0, step: 1 },
+  ...COMMON_PRODUCTION_FIELDS,
+];
+
+// --- Master lists
+export const CROP_OPTIONS = ["Coconut", "Cocoa", "Breadfruit", "Banana", "Kava", "Other Permanent Crop"];
+
+export const CROP_FIELDS: Record<string, Field[]> = {
+  Coconut: COCONUT_FIELDS,
+  Cocoa: COCOA_FIELDS,
+  Breadfruit: BREADFRUIT_FIELDS,
+  Banana: BANANA_FIELDS,
+  Kava: KAVA_FIELDS,
+  "Other Permanent Crop": OTHER_PERMANENT_FIELDS,
+};
+
+// Helper: fields to render after a crop is selected
+export function getFieldsForCrop(crop: string): Field[] {
+  const specific = CROP_FIELDS[crop] ?? [];
+  return [...COMMON_IDENT_FIELDS, { key: "crop_type", label: "Crop Type", type: "select", required: true, options: CROP_OPTIONS }, ...specific];
+}
