@@ -6,7 +6,8 @@ import json
 from datetime import datetime
 from utils.validators import validate_form_data
 
-st.set_page_config(page_title="Register Crops", page_icon="🌾")
+
+
 
 # Page namespace and state cleanup
 PAGE_PREFIX = "register"
@@ -420,7 +421,7 @@ if selected_crops:
         # Display the map
         map_data = st_folium(m,
                              width=None,
-                             height=400,
+                             height=500,
                              returned_objects=["all_drawings"],
                              key=k(f"map_{crop_type.lower()}"))
 

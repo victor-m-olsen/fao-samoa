@@ -38,7 +38,8 @@ import json
 import folium
 from streamlit_folium import st_folium
 
-st.title("View Data")
+
+
 
 st.title("Agricultural Data Dashboard 📊")
 st.markdown("Comprehensive view of collected agricultural data and insights")
@@ -216,7 +217,7 @@ st.subheader("Field Boundaries Map")
 
 # Create map centered on Upolu Island, Samoa
 map_center = [-13.9167, -171.7500]  # Upolu Island coordinates
-m = folium.Map(location=map_center, zoom_start=10, tiles=None)
+m = folium.Map(location=map_center, zoom_start=12, tiles=None)
 
 # Add satellite tile layer
 folium.TileLayer(
@@ -293,7 +294,7 @@ folium.LayerControl().add_to(m)
 
 # Display the map
 if not field_df.empty:
-    st_folium(m, width=700, height=500, key=k("field_boundaries_map"))
+    st_folium(m, width=None, height=700, key=k("field_boundaries_map"))
 else:
     st.info(
         "No field boundaries to display on map. Add boundaries from the Field Mapping page."
