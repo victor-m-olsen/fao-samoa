@@ -38,7 +38,7 @@ import json
 import folium
 from streamlit_folium import st_folium
 
-st.set_page_config(page_title="View Data", layout="wide")
+st.title("View Data")
 
 st.title("Agricultural Data Dashboard 📊")
 st.markdown("Comprehensive view of collected agricultural data and insights")
